@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Packer - Optymalizacja Rozkroju</title>
+    <!-- Inline SVG favicon fallback (shows immediately across hosts) -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232563eb'/><text x='50' y='65' font-size='60' text-anchor='middle' fill='white' font-family='Inter, sans-serif'>PP</text></svg>"
+    />
+    <link rel="icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="app-container">
+      <header>
+        <div class="top-controls">
+          <button id="exportBtn" class="btn secondary">Eksportuj CSV</button>
+          <button id="importBtn" class="btn secondary">Importuj CSV</button>
+          <input type="file" id="importFile" accept=".csv" style="display: none;" />
+        </div>
+        <h1>Profile Packer</h1>
+        <p>Optymalizacja rozkładu elementów na profilach</p>
+      </header>
+
+      <main>
+        <section class="input-section">
+          <div class="card">
+            <h2>1. Posiadane Profile</h2>
+            <p class="description">
+              Wpisz długości profili oddzielone przecinkami.
+            </p>
+            <div class="input-group">
+              <input
+                type="text"
+                id="profilesInput"
+                placeholder="np. 10, 20, 11, 13"
+                value=""
+              />
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>2. Elementy do Rozłożenia</h2>
+            <p class="description">
+              Dodaj elementy do listy lub załaduj przykład.
+            </p>
+
+            <div class="add-item-form">
+              <input
+                type="text"
+                id="itemName"
+                placeholder="Nazwa (np. Elem_A)"
+              />
+              <input
+                type="number"
+                id="itemValue"
+                placeholder="Wartość"
+                min="1"
+              />
+              <input
+                type="number"
+                id="itemQuantity"
+                placeholder="Ilość"
+                min="1"
+                value="1"
+              />
+              <button id="addItemBtn" class="btn primary">Dodaj</button>
+            </div>
+
+            <div class="actions">
+              <button id="clearItemsBtn" class="btn danger">
+                Wyczyść Listę
+              </button>
+            </div>
+
+            <div class="items-list-container">
+              <h3>Lista Elementów (<span id="itemsCount">0</span>)</h3>
+              <ul id="itemsList" class="items-list">
+                <!-- Items will be added here -->
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <div class="calculate-section">
+          <button id="calculateBtn" class="btn large-primary">
+            Oblicz Rozkład
+          </button>
+        </div>
+
+        <section id="resultsSection" class="results-section hidden">
+          <h2>Wyniki Rozłożenia</h2>
+          <div id="resultsContainer" class="results-grid">
+            <!-- Results will be injected here -->
+          </div>
+
+          <div class="summary-container">
+            <div class="summary-card">
+              <h3>Pozostałe Miejsce</h3>
+              <ul id="remainingSpaceList"></ul>
+            </div>
+            <div class="summary-card warning">
+              <h3>Niezmieszczone Elementy</h3>
+              <ul id="unfittedItemsList"></ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
