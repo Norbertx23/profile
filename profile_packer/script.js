@@ -1,8 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
   // State
   let items = [];
+  let profiles = [];
 
   // DOM Elements
+  const profileLengthInput = document.getElementById("profileLength");
+  const profileQuantityInput = document.getElementById("profileQuantity");
+  const addProfileBtn = document.getElementById("addProfileBtn");
+  const profilesList = document.getElementById("profilesList");
+  const profilesCount = document.getElementById("profilesCount");
+  const clearProfilesBtn = document.getElementById("clearProfilesBtn");
   const profilesInput = document.getElementById("profilesInput");
   const itemNameInput = document.getElementById("itemName");
   const itemValueInput = document.getElementById("itemValue");
@@ -21,12 +28,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const unfittedItemsList = document.getElementById("unfittedItemsList");
 
   // Event Listeners
+  addProfileBtn.addEventListener("click", addProfile);
+  clearProfilesBtn.addEventListener("click", clearProfiles);
   addItemBtn.addEventListener("click", addItem);
   clearItemsBtn.addEventListener("click", clearItems);
   calculateBtn.addEventListener("click", calculateDistribution);
   exportBtn.addEventListener("click", exportToCSV);
   importBtn.addEventListener("click", () => importFile.click());
   importFile.addEventListener("change", handleImport);
+
+  // Allow Enter key to add profile
+  profileQuantityInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") addProfile();
+  });
 
   // Allow Enter key to add item
   itemValueInput.addEventListener("keypress", (e) => {
@@ -35,6 +49,82 @@ document.addEventListener("DOMContentLoaded", () => {
   itemQuantityInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") addItem();
   });
+
+  // Functions
+  function addProfile() {
+    const length = parseFloat(profileLengthInput.value);
+    const quantity = parseInt(profileQuantityInput.value);
+
+    if (isNaN(length) || length <= 0 || isNaN(quantity) || quantity <= 0) {
+      alert("Proszę podać poprawną długość i ilość (większe od 0).");
+      return;
+    }
+
+    for (let i = 0; i < quantity; i++) {
+      const profile = {
+        id: Date.now() + i,
+        length: length,
+      };
+      profiles.push(profile);
+    }
+
+    renderProfiles();
+
+    // Reset inputs
+    profileLengthInput.value = "";
+    profileQuantityInput.value = "1";
+    profileLengthInput.focus();
+  }
+
+  function renderProfiles() {
+    profilesList.innerHTML = "";
+    profilesCount.textContent = profiles.length;
+
+    // Group profiles by length for display
+    const profilesByLength = {};
+    profiles.forEach((profile) => {
+      if (!profilesByLength[profile.length]) {
+        profilesByLength[profile.length] = 0;
+      }
+      profilesByLength[profile.length]++;
+    });
+
+    Object.keys(profilesByLength).forEach((length) => {
+      const li = document.createElement("li");
+      li.className = "item-row";
+      const count = profilesByLength[length];
+      li.innerHTML = `
+                <div class="item-info">
+                    <span class="item-name">${length}</span>
+                    <span class="item-value">x${count}</span>
+                </div>
+                <button class="delete-btn" onclick="removeProfileByLength(${length})">&times;</button>
+            `;
+      li.querySelector(".delete-btn").onclick = () =>
+        removeProfileByLength(length);
+      profilesList.appendChild(li);
+    });
+
+    // Update hidden profilesInput with comma-separated values
+    updateProfilesInput();
+  }
+
+  function updateProfilesInput() {
+    const profileLengths = profiles.map((p) => p.length).join(", ");
+    profilesInput.value = profileLengths;
+  }
+
+  window.removeProfileByLength = function (length) {
+    profiles = profiles.filter((p) => p.length !== parseFloat(length));
+    renderProfiles();
+  };
+
+  function clearProfiles() {
+    if (confirm("Czy na pewno chcesz wyczyścić listę profili?")) {
+      profiles = [];
+      renderProfiles();
+    }
+  }
 
   // Functions
   function addItem() {
@@ -161,8 +251,14 @@ document.addEventListener("DOMContentLoaded", () => {
     remainingSpaceList.innerHTML = "";
     unfittedItemsList.innerHTML = "";
 
-    // Render Profiles
-    Object.keys(wyniki).forEach((key) => {
+    // Render Profiles - sort keys numerically
+    const sortedKeys = Object.keys(wyniki).sort((a, b) => {
+      const numA = parseInt(a.match(/\d+/)[0]);
+      const numB = parseInt(b.match(/\d+/)[0]);
+      return numA - numB;
+    });
+
+    sortedKeys.forEach((key) => {
       const data = wyniki[key];
 
       const card = document.createElement("div");
