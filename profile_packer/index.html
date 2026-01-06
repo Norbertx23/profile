@@ -25,7 +25,12 @@
         <div class="top-controls">
           <button id="exportBtn" class="btn secondary">Eksportuj CSV</button>
           <button id="importBtn" class="btn secondary">Importuj CSV</button>
-          <input type="file" id="importFile" accept=".csv" style="display: none;" />
+          <input
+            type="file"
+            id="importFile"
+            accept=".csv"
+            style="display: none"
+          />
         </div>
         <h1>Profile Packer</h1>
         <p>Optymalizacja rozkładu elementów na profilach</p>
@@ -36,13 +41,46 @@
           <div class="card">
             <h2>1. Posiadane Profile</h2>
             <p class="description">
-              Wpisz długości profili oddzielone przecinkami.
+              Dodaj profile do listy poprzez podanie długości i ilości.
             </p>
-            <div class="input-group">
+
+            <div class="add-item-form">
+              <input
+                type="number"
+                id="profileLength"
+                placeholder="Długość"
+                min="1"
+              />
+              <input
+                type="number"
+                id="profileQuantity"
+                placeholder="Ilość"
+                min="1"
+                value="1"
+              />
+              <button id="addProfileBtn" class="btn primary">
+                Dodaj Profil
+              </button>
+            </div>
+
+            <div class="actions">
+              <button id="clearProfilesBtn" class="btn danger">
+                Wyczyść Profile
+              </button>
+            </div>
+
+            <div class="items-list-container">
+              <h3>Lista Profili (<span id="profilesCount">0</span>)</h3>
+              <ul id="profilesList" class="items-list">
+                <!-- Profiles will be added here -->
+              </ul>
+            </div>
+
+            <div class="input-group" style="margin-top: 1rem; display: none">
               <input
                 type="text"
                 id="profilesInput"
-                placeholder="np. 10, 20, 11, 13"
+                placeholder="Lub wklej gotową listę (np. 10, 20, 11, 13)"
                 value=""
               />
             </div>
