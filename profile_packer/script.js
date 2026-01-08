@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const summaryLi = document.createElement("li");
       summaryLi.style.marginBottom = "0.5rem";
-      summaryLi.innerHTML = `<strong>${key.replace("_", " ")}</strong>: zostało <span style="color: var(--success-color)">${data.wolne}</span>`;
+      summaryLi.innerHTML = `<strong>${key.replace(/_(\d+)/, (_, n) => ` ${parseInt(n) + 1}`)}</strong>: zostało <span style="color: var(--success-color)">${data.wolne}</span>`;
       remainingSpaceList.appendChild(summaryLi);
     });
 
