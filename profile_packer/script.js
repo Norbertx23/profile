@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // State
   let items = [];
   let profiles = [];
 
-  // DOM Elements
   const profileLengthInput = document.getElementById("profileLength");
   const profileQuantityInput = document.getElementById("profileQuantity");
   const addProfileBtn = document.getElementById("addProfileBtn");
@@ -27,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const remainingSpaceList = document.getElementById("remainingSpaceList");
   const unfittedItemsList = document.getElementById("unfittedItemsList");
 
-  // Event Listeners
   addProfileBtn.addEventListener("click", addProfile);
   clearProfilesBtn.addEventListener("click", clearProfiles);
   addItemBtn.addEventListener("click", addItem);
@@ -50,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") addItem();
   });
 
-  // Functions
   function addProfile() {
     const length = parseFloat(profileLengthInput.value);
     const quantity = parseInt(profileQuantityInput.value);
@@ -70,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderProfiles();
 
-    // Reset inputs
     profileLengthInput.value = "";
     profileQuantityInput.value = "1";
     profileLengthInput.focus();
@@ -80,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
     profilesList.innerHTML = "";
     profilesCount.textContent = profiles.length;
 
-    // Group profiles by length for display
     const profilesByLength = {};
     profiles.forEach((profile) => {
       if (!profilesByLength[profile.length]) {
@@ -105,7 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
       profilesList.appendChild(li);
     });
 
-    // Update hidden profilesInput with comma-separated values
     updateProfilesInput();
   }
 
@@ -126,7 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Functions
   function addItem() {
     const name = itemNameInput.value.trim();
     const value = parseFloat(itemValueInput.value);
@@ -145,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (let i = 0; i < quantity; i++) {
       const item = {
-        id: Date.now() + i, // Ensure unique IDs
+        id: Date.now() + i,
         nazwa: quantity > 1 ? `${name}_${i + 1}` : name,
         wartosc: value,
       };
@@ -154,7 +146,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderItems();
 
-    // Reset inputs
     itemNameInput.value = "";
     itemValueInput.value = "";
     itemQuantityInput.value = "1";
@@ -175,13 +166,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
                 <button class="delete-btn" onclick="removeItem(${item.id})">&times;</button>
             `;
-      // Attach event listener directly to avoid global scope issues with onclick string
       li.querySelector(".delete-btn").onclick = () => removeItem(item.id);
       itemsList.appendChild(li);
     });
   }
 
-  // Expose removeItem to be used in renderItems closure, but better to handle inside
   window.removeItem = function (id) {
     items = items.filter((item) => item.id !== id);
     renderItems();
@@ -196,7 +185,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function calculateDistribution() {
-    // 1. Parse Profiles
     const profilesStr = profilesInput.value;
     const profiles = profilesStr
       .split(",")
@@ -213,7 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 2. Send Data to Backend
     try {
       calculateBtn.disabled = true;
       calculateBtn.textContent = "Obliczanie...";
@@ -235,7 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
 
-      // 3. Render Results
       renderResults(data.results, data.unassigned);
     } catch (error) {
       console.error("Error:", error);
@@ -251,7 +237,6 @@ document.addEventListener("DOMContentLoaded", () => {
     remainingSpaceList.innerHTML = "";
     unfittedItemsList.innerHTML = "";
 
-    // Render Profiles - sort keys numerically
     const sortedKeys = Object.keys(wyniki).sort((a, b) => {
       const numA = parseInt(a.match(/\d+/)[0]);
       const numB = parseInt(b.match(/\d+/)[0]);
@@ -292,14 +277,12 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
       resultsContainer.appendChild(card);
 
-      // Summary List
       const summaryLi = document.createElement("li");
       summaryLi.style.marginBottom = "0.5rem";
       summaryLi.innerHTML = `<strong>${key.replace("_", " ")}</strong>: zostało <span style="color: var(--success-color)">${data.wolne}</span>`;
       remainingSpaceList.appendChild(summaryLi);
     });
 
-    // Render Unassigned
     if (unassignedItems.length > 0) {
       unassignedItems.forEach((item) => {
         const li = document.createElement("li");
@@ -322,13 +305,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const profilesStr = profilesInput.value.replace(/"/g, '""'); // Escape quotes
+    const profilesStr = profilesInput.value.replace(/"/g, '""'); 
     let csvContent = "data:text/csv;charset=utf-8,";
     csvContent += "SECTION,Nazwa,Rozmiar\n";
     csvContent += `Lista_Profili,"${profilesStr}",\n`;
 
     items.forEach((item) => {
-      // Escape CSV unsafe characters
       const safeName = item.nazwa.replace(/"/g, '""');
       csvContent += `ITEM,"${safeName}",${item.wartosc}\n`;
     });
@@ -337,7 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", "profile_packer_data.csv");
-    document.body.appendChild(link); // Required for FF
+    document.body.appendChild(link); 
     link.click();
     document.body.removeChild(link);
   }
@@ -353,23 +335,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const content = e.target.result;
       const lines = content.split("\n");
 
-      // Reset current state
       items = [];
       let profileStringFound = "";
 
       lines.forEach((line) => {
-        // Simple CSV parsing (handling quotes slightly)
-        // Note: This is a basic parser. For robust CSV, use a library.
-        // Assuming our format: SECTION,"DATA1",DATA2 or SECTION,DATA1,DATA2
+
         if (!line.trim()) return;
 
-        // Naive split by comma, respecting quotes is tricky without regex or lib
-        // Given we control export, we can try a regex match.
-        // Matches: "quoted string" or unquoted_string
         const parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-        if (!parts) return; // Skip empty or malformed
+        if (!parts) return;
 
-        // Clean quotes
         const cleanParts = parts.map((p) => {
           if (p.startsWith('"') && p.endsWith('"')) {
             return p.slice(1, -1).replace(/""/g, '"');
@@ -389,7 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const val = parseFloat(cleanParts[2]);
             if (name && !isNaN(val)) {
               items.push({
-                id: Date.now() + Math.random(), // New unique ID
+                id: Date.now() + Math.random(),
                 nazwa: name,
                 wartosc: val,
               });
@@ -398,13 +373,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Update UI
       if (profileStringFound) {
         profilesInput.value = profileStringFound;
       }
       renderItems();
       alert("Dane zaimportowane pomyślnie.");
-      importFile.value = ""; // Reset input so same file can be selected again
+      importFile.value = "";
     };
     reader.readAsText(file);
   }
