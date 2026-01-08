@@ -283,7 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       card.innerHTML = `
                 <div class="result-header">
-                    <span class="profile-name">${key.replace("_", " ")}</span>
+                    <span class="profile-name">${key.replace(/_(\d+)/, (_, n) => ` ${parseInt(n) + 1}`)}</span>
                     <span class="profile-capacity">Dł: ${data.dlugosc}</span>
                 </div>
                 <div class="result-items">
