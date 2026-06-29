@@ -7,7 +7,7 @@ Aplikacja webowa zaprojektowana do precyzyjnego wyznaczania planów cięcia prof
 ## 🌐 Dostęp do aplikacji
 
 Aplikacja jest dostępna online pod adresem:
-👉 **[https://muehlhanprofile.onrender.com/](https://muehlhanprofile.onrender.com/)**
+👉 **[](https://muehlhanprofile.onrender.com/)**
 
 ### ⏳ Pierwsze uruchomienie
 Aplikacja korzysta z darmowej infrastruktury serwerowej (Render), co wiąże się z pewnymi specyfikami:

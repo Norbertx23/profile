@@ -1,0 +1,12 @@
+services:
+  app:
+    container_name: profile_app_container
+
+    build:
+      context: ./profile_packer
+      dockerfile: Dockerfile
+
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:3001:80"
