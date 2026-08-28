@@ -18,7 +18,6 @@ def serve_static(path):
 def calculate():
     data = request.json
     
-    # Extract data
     posiadane_profile = data.get('profiles', [])
     do_rozlozenia = data.get('items', [])
 

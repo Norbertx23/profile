@@ -1,6 +1,3 @@
-# Stack produkcyjny - model pull (obraz z GHCR, zero budowania na serwerze).
-# Docelowa lokalizacja na serwerze: /opt/stacks/profile/docker-compose.yml
-
 name: profile
 
 services:

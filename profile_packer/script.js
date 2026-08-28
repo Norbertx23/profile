@@ -34,12 +34,10 @@ document.addEventListener("DOMContentLoaded", () => {
   importBtn.addEventListener("click", () => importFile.click());
   importFile.addEventListener("change", handleImport);
 
-  // Allow Enter key to add profile
   profileQuantityInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") addProfile();
   });
 
-  // Allow Enter key to add item
   itemValueInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") addItem();
   });
