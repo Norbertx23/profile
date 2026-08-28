@@ -1,12 +1,18 @@
+# Stack produkcyjny - model pull (obraz z GHCR, zero budowania na serwerze).
+# Docelowa lokalizacja na serwerze: /opt/stacks/profile/docker-compose.yml
+
+name: profile
+
 services:
   app:
-    container_name: profile_app_container
-
-    build:
-      context: ./profile_packer
-      dockerfile: Dockerfile
-
+    image: ghcr.io/norbertx23/profile:${APP_TAG:-latest}
+    container_name: profile_app
     restart: unless-stopped
+    networks: [edge]
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
 
-    ports:
-      - "127.0.0.1:3001:80"
+networks:
+  edge:
+    external: true
